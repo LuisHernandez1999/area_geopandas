@@ -9,6 +9,8 @@ from shapely.ops import transform
 import pyproj
 import tkinter as tk
 from tkinter import messagebox
+import time
+import platform
 
 class DesmatamentoApp:
     def __init__(self, root):
@@ -41,36 +43,49 @@ class DesmatamentoApp:
         except ValueError:
             messagebox.showerror("Erro", "Coordenadas inválidas.")
 
+    def open_file(self, path):
+        print(f"Abrindo arquivo {path} no navegador padrão...")
+        if platform.system() == "Windows":
+            os.system(f'start {path}')
+        elif platform.system() == "Darwin":  # macOS
+            os.system(f'open {path}')
+        else:  # Linux
+            os.system(f'xdg-open {path}')
+
     def process(self):
         if len(self.coords) < 3:
             messagebox.showwarning("Aviso", "Insira ao menos 3 coordenadas.")
             return
 
-       
         if self.coords[0] != self.coords[-1]:
             self.coords.append(self.coords[0])
 
-        
         lat_center = sum([p[0] for p in self.coords]) / len(self.coords)
         lon_center = sum([p[1] for p in self.coords]) / len(self.coords)
 
-        
+        print("Salvando mapa base...")
         m = folium.Map(location=[lat_center, lon_center], zoom_start=19,
                        tiles='http://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', attr='Google')
         folium.Polygon(locations=self.coords, color='blue', fill=False).add_to(m)
         m.save("temp_map.html")
 
-        
+        print("Configurando Selenium para captura de tela...")
         options = Options()
-        options.headless = True
+        options.headless = True  # Se quiser ver o navegador, mude para False
         driver = webdriver.Chrome(options=options)
         driver.set_window_size(800, 800)
-        driver.get("file://" + os.path.realpath("temp_map.html"))
-        driver.save_screenshot("screenshot.png")
-        driver.quit()
 
-        
-        img = cv2.imread("screenshot.png")
+        file_url = "file://" + os.path.realpath("temp_map.html")
+        print(f"Abrindo arquivo local no navegador: {file_url}")
+        driver.get(file_url)
+        time.sleep(3)  # Espera o mapa carregar
+
+        screenshot_path = "screenshot.png"
+        driver.save_screenshot(screenshot_path)
+        driver.quit()
+        print(f"Screenshot salva em {screenshot_path}")
+
+        img = cv2.imread(screenshot_path)
         height, width = img.shape[:2]
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
@@ -81,7 +96,6 @@ class DesmatamentoApp:
 
         contours, _ = cv2.findContours(mask_non_green, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-        
         lats = [p[0] for p in self.coords]
         lons = [p[1] for p in self.coords]
         lat_min, lat_max = min(lats), max(lats)
@@ -92,24 +106,20 @@ class DesmatamentoApp:
             lon = lon_min + (x / width) * (lon_max - lon_min)
             return (lat, lon)
 
+        print("Gerando mapa do resultado...")
         desmatamento_map = folium.Map(location=[lat_center, lon_center], zoom_start=19,
                                       tiles='http://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', attr='Google')
-       
         folium.Polygon(locations=self.coords, color='blue', fill=False).add_to(desmatamento_map)
 
         areas = []
         for cnt in contours:
             area_px = cv2.contourArea(cnt)
-            if area_px > 100:  # filtra ruídos pequenos
+            if area_px > 100:
                 approx = cv2.approxPolyDP(cnt, 3, True)
                 poly_latlon = [pixel_to_latlon(p[0][0], p[0][1]) for p in approx]
-
-                # Áreas desmatadas só borda vermelha
                 folium.Polygon(locations=poly_latlon, color='red', fill=False).add_to(desmatamento_map)
 
-                polygon = Polygon([(lon, lat) for lat, lon in poly_latlon])  # x=lon, y=lat
-
-                # Projeta para EPSG:3857 para calcular área m2
+                polygon = Polygon([(lon, lat) for lat, lon in poly_latlon])
                 project = pyproj.Transformer.from_crs("epsg:4326", "epsg:3857", always_xy=True).transform
                 polygon_proj = transform(project, polygon)
                 area_m2 = polygon_proj.area
@@ -117,6 +127,7 @@ class DesmatamentoApp:
                 areas.append(area_km2)
 
         total_area = sum(areas)
+        print(f"Área total desmatada estimada: {total_area:.4f} km²")
 
         if total_area > 0:
             popup_text = f"⚠️ Possível área desmatada detectada!\nÁrea total estimada: {total_area:.4f} km²"
@@ -124,10 +135,18 @@ class DesmatamentoApp:
                           popup=popup_text,
                           icon=folium.Icon(color='red', icon='exclamation-triangle', prefix='fa')).add_to(desmatamento_map)
 
-        desmatamento_map.save("resultado_desmatamento.html")
-        os.remove("temp_map.html")
-        os.remove("screenshot.png")
-        os.system(f'start resultado_desmatamento.html')
+        resultado_html = "resultado_desmatamento.html"
+        desmatamento_map.save(resultado_html)
+
+        # Remover arquivos temporários com verificação
+        for f in ["temp_map.html", screenshot_path]:
+            if os.path.exists(f):
+                os.remove(f)
+                print(f"Arquivo temporário removido: {f}")
+
+        # Abrir o arquivo resultante no navegador padrão
+        self.open_file(resultado_html)
+
 
 if __name__ == "__main__":
     root = tk.Tk()
