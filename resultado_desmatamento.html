@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_08f773711e26e7e3f3d9e3444ecef8ef {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_08f773711e26e7e3f3d9e3444ecef8ef" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_08f773711e26e7e3f3d9e3444ecef8ef = L.map(
+                "map_08f773711e26e7e3f3d9e3444ecef8ef",
+                {
+                    center: [-11.424499999999998, -62.92719999999999],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 19,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_dac5ed5c3acdc322c9fde7a473a316be = L.tileLayer(
+                "http://mt1.google.com/vt/lyrs=s\u0026x={x}\u0026y={y}\u0026z={z}",
+                {
+  "minZoom": 0,
+  "maxZoom": 18,
+  "maxNativeZoom": 18,
+  "noWrap": false,
+  "attribution": "Google",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_dac5ed5c3acdc322c9fde7a473a316be.addTo(map_08f773711e26e7e3f3d9e3444ecef8ef);
+        
+    
+            var polygon_60f4943ab5f1ecfa47a9a804605791b8 = L.polygon(
+                [[-11.4249, -62.9276], [-11.4249, -62.9266], [-11.4239, -62.9266], [-11.4239, -62.9276], [-11.4249, -62.9276]],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "blue", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_08f773711e26e7e3f3d9e3444ecef8ef);
+        
+    
+            var polygon_c6083a875b5f4ff2ad70db251aa8f9c5 = L.polygon(
+                [[-11.4239, -62.9276], [-11.424898778998779, -62.9276], [-11.424898778998779, -62.926601016260165], [-11.4239, -62.926601016260165]],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_08f773711e26e7e3f3d9e3444ecef8ef);
+        
+    
+            var marker_274cccf31d4f5b8d7292105503fac7e9 = L.marker(
+                [-11.424499999999998, -62.92719999999999],
+                {
+}
+            ).addTo(map_08f773711e26e7e3f3d9e3444ecef8ef);
+        
+    
+            var icon_beec518ab8ac570f9f766ee6780d9b2f = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "exclamation-triangle",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_b184a4540fb1761fe54154d1649a087b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_1b2570439530de46ac32a4615a5476d6 = $(`<div id="html_1b2570439530de46ac32a4615a5476d6" style="width: 100.0%; height: 100.0%;">⚠️ Possível área desmatada detectada! Área total estimada: 0.0126 km²</div>`)[0];
+                popup_b184a4540fb1761fe54154d1649a087b.setContent(html_1b2570439530de46ac32a4615a5476d6);
+            
+        
+
+        marker_274cccf31d4f5b8d7292105503fac7e9.bindPopup(popup_b184a4540fb1761fe54154d1649a087b)
+        ;
+
+        
+    
+    
+                marker_274cccf31d4f5b8d7292105503fac7e9.setIcon(icon_beec518ab8ac570f9f766ee6780d9b2f);
+            
+</script>
+</html>
